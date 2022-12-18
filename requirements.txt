@@ -1,1 +1,2 @@
 podman-compose==1.0.3
+PyYAML==6.0
