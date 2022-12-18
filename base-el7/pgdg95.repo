@@ -1,0 +1,6 @@
+[pgdg95]
+name=PostgreSQL 9.5 for RHEL/CentOS $releasever - $basearch
+baseurl=https://yum-archive.postgresql.org/9.5/redhat/rhel-$releasever-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG

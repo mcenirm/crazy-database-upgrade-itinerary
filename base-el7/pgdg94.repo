@@ -1,0 +1,6 @@
+[pgdg94]
+name=PostgreSQL 9.4 for RHEL/CentOS $releasever - $basearch
+baseurl=https://yum-archive.postgresql.org/9.4/redhat/rhel-$releasever-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG

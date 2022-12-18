@@ -1,0 +1,35 @@
+FROM base:el7
+
+# eg, 9.4 vs 94
+ARG postgresql_version_full
+ARG postgresql_version_abbr
+
+# eg, postgis<2>_94 or postgis<33>_15
+ARG postgis_package_version_abbr
+
+# Install Postgresql and Postgis
+RUN yum -y install \
+postgis${postgis_package_version_abbr}_${postgresql_version_abbr} \
+postgresql${postgresql_version_abbr}-server \
+&& yum clean all
+
+# Prepare to run systemd
+# from https://hub.docker.com/_/centos#:~:text=Dockerfile%20for%20systemd%20base%20image
+ENV container docker
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*;\
+rm -f /etc/systemd/system/*.wants/*;\
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*;\
+rm -f /lib/systemd/system/anaconda.target.wants/*;
+VOLUME [ "/sys/fs/cgroup" ]
+
+# Enable Postgresql
+# based on https://hub.docker.com/_/centos#:~:text=Example%20systemd%20enabled%20app%20container
+RUN systemctl enable postgresql-${postgresql_version_full}.service
+
+EXPOSE 5432
+VOLUME [ "/var/lib/pgsql/${postgresql_version_full}/data" ]

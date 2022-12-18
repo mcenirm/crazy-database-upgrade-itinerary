@@ -1,0 +1,46 @@
+services:
+  base:
+    image: "base:el7"
+    build: "base-el7"
+    command: "/usr/bin/true"
+
+  postgis_21_94:
+    image: "postgis:21_94"
+    depends_on:
+      - postgis_21_94_db
+  postgis_21_94_db:
+    image: "postgis:21_94"
+    build:
+      context: "image-postgis"
+      args:
+        postgresql_version_full: "9.4"
+        postgresql_version_abbr: "94"
+        postgis_package_version_abbr: "2"
+    command: "/usr/sbin/init"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "pgdata94:/var/lib/pgsql/9.4/data"
+
+  postgis_24_94:
+    image: "postgis:24_94"
+    depends_on:
+      - postgis_24_94_db
+  postgis_24_94_db:
+    image: "postgis:24_94"
+    build:
+      context: "image-postgis"
+      args:
+        postgresql_version_full: "9.4"
+        postgresql_version_abbr: "94"
+        postgis_package_version_abbr: "24"
+    command: "/usr/sbin/init"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "pgdata94:/var/lib/pgsql/9.4/data"
+
+volumes:
+  pgdata94:
+  pgdata11:
+  pgdata15:

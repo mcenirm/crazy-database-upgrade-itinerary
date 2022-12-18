@@ -1,0 +1,11 @@
+FROM docker.io/library/centos:7.9.2009
+
+RUN yum -y update
+RUN yum -y install epel-release
+RUN yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-42.0-28.noarch.rpm
+
+ADD pgdg94.repo /etc/yum.repos.d/pgdg94.repo
+ADD pgdg95.repo /etc/yum.repos.d/pgdg95.repo
+ADD pgdg96.repo /etc/yum.repos.d/pgdg96.repo
+
+RUN yum -q -y makecache
