@@ -45,7 +45,7 @@ class Build:
     context: str
     args: dict[str, Any] | None = None
 
-    def for_compose_yml(self) -> dict[str, dict | None]:
+    def for_compose_yml(self) -> str | dict[str, str | dict]:
         if self.args is None:
             return str(self.context)
         else:
@@ -275,7 +275,7 @@ for step in [None] + STEPS:
     service_list.append(db)
 
 compose = AbridgedCompose(
-    services={s._name: s for s in service_list} if service_list else None,
+    services={s._name: s for s in service_list},
     volumes={name: None for name in volume_names} if volume_names else None,
 )
 
@@ -291,16 +291,18 @@ class BlankNone:
 
     def __init__(self) -> None:
         self.priors = {}
-        self.representers: list[Type[yaml.representer.Representer]] = [
+        self.representer_classes: list[Type[yaml.representer.BaseRepresenter]] = [
             yaml.Dumper,
             yaml.SafeDumper,
         ]
 
     def __enter__(self):
         assert not (self.priors)
-        for representer in self.representers:
-            self.priors[representer] = representer.yaml_representers[type(None)]
-            representer.add_representer(
+        for representer_class in self.representer_classes:
+            self.priors[representer_class] = representer_class.yaml_representers[
+                type(None)
+            ]
+            representer_class.add_representer(
                 type(None),
                 lambda representer, _: representer.represent_scalar(
                     "tag:yaml.org,2002:null",
@@ -309,7 +311,7 @@ class BlankNone:
             )
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        for representer in self.representers:
+        for representer in self.representer_classes:
             representer.yaml_representers[type(None)] = self.priors.pop(representer)
         assert not (self.priors)
 
